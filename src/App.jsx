@@ -15,49 +15,66 @@ const PERSONAS = {
     label: "The Rocket",
     tag: "Ambition • Mastery • Momentum",
     color: COLORS.enterpriseBlue,
-    story: `You move with hunger. You’ve always felt there is something bigger you’re meant to do, and you are willing to chase it.\n\nYou don’t fear effort — what you fear is potential left unused. You want to meet the version of you that is powerful, sharp, undeniably capable.\n\nYour path is not to slow down. Your path is to learn how to turn intensity into mastery.`,
+    story: `You move with hunger. You’ve always felt there is something bigger you’re meant to do, and you are willing to chase it.
+
+You don’t fear effort — what you fear is potential left unused. You want to meet the version of you that is powerful, sharp, undeniably capable.
+
+Your path is not to slow down. Your path is to learn how to turn intensity into mastery.`,
   },
   voyager: {
     label: "The Voyager",
     tag: "Discovery • Identity • Confidence",
     color: COLORS.brightTeal,
-    story: `You are someone who is becoming.\n\nYou grow through experiences that change you on the inside. You want to feel proud of yourself — not just for what you do, but for who you are becoming.\n\nSometimes the journey feels confusing or overwhelming. That’s okay. It means you are in motion. Your path is not to rush choosing. Your path is to walk, reflect, and rise into yourself.`,
+    story: `You are someone who is becoming.
+
+You grow through experiences that change you on the inside. You want to feel proud of yourself — not just for what you do, but for who you are becoming.
+
+Sometimes the journey feels confusing or overwhelming. That’s okay. It means you are in motion. Your path is not to rush choosing. Your path is to walk, reflect, and rise into yourself.`,
   },
   specialist: {
     label: "The Specialist",
     tag: "Depth • Excellence • Focus (Early)",
     color: "#C28B37",
-    story: `You care about excellence. You want to be among the few who are truly good at something — not just another person in the crowd.\n\nYour focus is strong. Your identity is sharp. But sometimes, this turns into comparison and pressure to stay ahead. You worry that exploring will make you fall behind.\n\nYour growth is not in narrowing more. Your growth is in exploring just enough to choose with truth, not fear.`,
+    story: `You care about excellence. You want to be among the few who are truly good at something — not just another person in the crowd.
+
+Your focus is strong. Your identity is sharp. But sometimes, this turns into comparison and pressure to stay ahead. You worry that exploring will make you fall behind.
+
+Your growth is not in narrowing more. Your growth is in exploring just enough to choose with truth, not fear.`,
   },
   brandwagon: {
-    label: "The Brand‑Wagon",
+    label: "The Brand-Wagon",
     tag: "Vibe • Aesthetic • Social Proof",
     color: "#F2A900",
-    story: `You have a strong sense of style, vibe, energy. You care how life feels. You care how life looks. You want to be seen — not invisible.\n\nBut sometimes, you chase what is popular instead of what is real. You fear missing out.\n\nYour growth is not in giving up beauty or expression. Your growth is in choosing what feels true, even when no one is watching.`,
+    story: `You have a strong sense of style, vibe, energy. You care how life feels. You care how life looks. You want to be seen — not invisible.
+
+But sometimes, you chase what is popular instead of what is real. You fear missing out.
+
+Your growth is not in giving up beauty or expression. Your growth is in choosing what feels true, even when no one is watching.`,
   },
   conventional: {
     label: "The Conventional",
     tag: "Stability • Clarity • Structure",
     color: "#6B7280",
-    story: `You care about safety, clarity, and doing things right. You want a path you can trust — one that doesn’t fall apart under you.\n\nWhen the way forward is unclear, anxiety rises — not because you are weak, but because you care about consequences.\n\nYour growth is not in being reckless. Your growth is in taking small, supported steps into the unknown.`,
+    story: `You care about safety, clarity, and doing things right. You want a path you can trust — one that doesn’t fall apart under you.
+
+When the way forward is unclear, anxiety rises — not because you are weak, but because you care about consequences.
+
+Your growth is not in being reckless. Your growth is in taking small, supported steps into the unknown.`,
   },
   performer: {
     label: "The Performer",
     tag: "Admiration • Presence • Image",
     color: "#E14949",
-    story: `You shine. You know how to carry yourself. You know how to be noticed.\n\nYou speak confidence — but underneath, there is a quiet fear: “If I am not impressive, will I still matter?”\n\nYour excitement is real. Your charisma is real. The mask is what hurts you, not the ambition behind it. Your growth begins the moment you let yourself be seen not as perfect — but as human.`,
+    story: `You shine. You know how to carry yourself. You know how to be noticed.
+
+You speak confidence — but underneath, there is a quiet fear: “If I am not impressive, will I still matter?”
+
+Your excitement is real. Your charisma is real. The mask is what hurts you, not the ambition behind it. Your growth begins the moment you let yourself be seen not as perfect — but as human.`,
   },
 };
 
-type PersonaKey = keyof typeof PERSONAS;
-
-type Question = {
-  a: { text: string; persona: PersonaKey };
-  b: { text: string; persona: PersonaKey };
-};
-
-// --- Forced‑choice items (25)
-const QUESTIONS: Question[] = [
+// --- Forced-choice items (25)
+const QUESTIONS = [
   { a: { text: "I want to achieve big things.", persona: "rocket" }, b: { text: "I want to understand myself better.", persona: "voyager" } },
   { a: { text: "I like to try many things before choosing.", persona: "voyager" }, b: { text: "I want to stick to one field I decided.", persona: "specialist" } },
   { a: { text: "I feel happy when I improve and get better.", persona: "rocket" }, b: { text: "I feel happy when I look confident and impressive.", persona: "performer" } },
@@ -69,7 +86,7 @@ const QUESTIONS: Question[] = [
   { a: { text: "I want to explore more before choosing.", persona: "voyager" }, b: { text: "I want to specialise now and go deep.", persona: "specialist" } },
   { a: { text: "I like talking about ideas and learning.", persona: "voyager" }, b: { text: "I like talking about goals and success.", persona: "rocket" } },
   { a: { text: "I feel stressed with no clear direction.", persona: "conventional" }, b: { text: "I’m okay figuring it out while moving.", persona: "rocket" } },
-  { a: { text: "I choose things that help me grow long‑term.", persona: "rocket" }, b: { text: "I choose things that look exciting now.", persona: "brandwagon" } },
+  { a: { text: "I choose things that help me grow long-term.", persona: "rocket" }, b: { text: "I choose things that look exciting now.", persona: "brandwagon" } },
   { a: { text: "I’m okay starting at zero and learning slowly.", persona: "voyager" }, b: { text: "I feel uncomfortable if I’m not already good.", persona: "performer" } },
   { a: { text: "I like people who challenge me to grow.", persona: "voyager" }, b: { text: "I like people who hype me up.", persona: "brandwagon" } },
   { a: { text: "I want life to feel big.", persona: "rocket" }, b: { text: "I want life to feel real and meaningful.", persona: "voyager" } },
@@ -85,7 +102,7 @@ const QUESTIONS: Question[] = [
   { a: { text: "I want to grow in real life, not just in my image.", persona: "voyager" }, b: { text: "I want to be seen as impressive.", persona: "performer" } },
 ];
 
-function ProgressBar({ value }: { value: number }) {
+function ProgressBar({ value }) {
   return (
     <div style={{ background: "#E5E7EB" }} className="w-full h-2 rounded-full">
       <div
@@ -98,7 +115,7 @@ function ProgressBar({ value }: { value: number }) {
 
 function App() {
   const [i, setI] = useState(0);
-  const [scores, setScores] = useState<Record<PersonaKey, number>>({
+  const [scores, setScores] = useState({
     rocket: 0,
     voyager: 0,
     specialist: 0,
@@ -108,38 +125,43 @@ function App() {
   });
   const [done, setDone] = useState(false);
 
-  const pct = Math.round(((i) / QUESTIONS.length) * 100);
+  const pct = Math.round((i / QUESTIONS.length) * 100);
 
-  function choose(persona: PersonaKey) {
+  function choose(persona) {
     setScores((s) => ({ ...s, [persona]: (s[persona] || 0) + 1 }));
     const next = i + 1;
-    if (next >= QUESTIONS.length) {
-      setDone(true);
-    }
+    if (next >= QUESTIONS.length) setDone(true);
     setI(next);
   }
 
   function restart() {
     setI(0);
     setDone(false);
-    setScores({ rocket: 0, voyager: 0, specialist: 0, brandwagon: 0, conventional: 0, performer: 0 });
+    setScores({
+      rocket: 0,
+      voyager: 0,
+      specialist: 0,
+      brandwagon: 0,
+      conventional: 0,
+      performer: 0,
+    });
   }
 
   const sorted = useMemo(() => {
-    return (Object.keys(PERSONAS) as PersonaKey[])
+    return Object.keys(PERSONAS)
       .map((k) => ({ key: k, score: scores[k] }))
       .sort((a, b) => b.score - a.score);
   }, [scores]);
 
-  const top = sorted[0]?.key as PersonaKey | undefined;
-  const second = sorted[1]?.key as PersonaKey | undefined;
+  const top = sorted[0]?.key;
+  const second = sorted[1]?.key;
 
   return (
     <div className="min-h-screen" style={{ background: COLORS.sand, color: COLORS.ink }}>
       <div className="max-w-xl mx-auto px-5 pb-20 pt-8">
         <header className="mb-6">
           <h1 className="text-2xl font-bold" style={{ color: COLORS.deepBlue }}>LE Persona Quiz</h1>
-          <p className="text-sm opacity-80">Rocket • Voyager • Specialist • Brand‑Wagon • Conventional • Performer</p>
+          <p className="text-sm opacity-80">Rocket • Voyager • Specialist • Brand-Wagon • Conventional • Performer</p>
         </header>
 
         {!done ? (
