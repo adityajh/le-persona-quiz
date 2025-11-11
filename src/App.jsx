@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 
 /** ========== BRAND ========= */
 const COLORS = {
@@ -10,9 +10,8 @@ const COLORS = {
   border: "#E5E7EB",
 };
 
-// ⚠️ Put your Apps Script Web App URL here (step 2 below)
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU7gBtfgcf7y5MKUV2_ysl0_TIcDv2jVegjIKa6scvOnhiNIfVIp8xTICfxIPAyPxyWA/exec";
-
+// ⚠️ Put your Apps Script Web App URL here after you deploy the script (or leave as-is to skip sending)
+const GOOGLE_SCRIPT_URL = "https://SCRIPT_URL_HERE";
 
 /** ========== PERSONAS ========= */
 const PERSONAS = {
@@ -26,6 +25,7 @@ You don’t fear effort — what you fear is potential left unused. You want to 
 
 Your path is not to slow down. Your path is to learn how to turn intensity into mastery.`,
   },
+
   voyager: {
     label: "The Voyager",
     tag: "Discovery • Identity • Confidence",
@@ -36,6 +36,7 @@ You grow through experiences that change you on the inside. You want to feel pro
 
 Sometimes the journey feels confusing or overwhelming. That’s okay. It means you are in motion. Your path is not to rush choosing. Your path is to walk, reflect, and rise into yourself.`,
   },
+
   specialist: {
     label: "The Specialist",
     tag: "Depth • Excellence • Focus (Early)",
@@ -46,26 +47,31 @@ Your focus is strong. Your identity is sharp. But sometimes, this turns into com
 
 Your growth is not in narrowing more. Your growth is in exploring just enough to choose with truth, not fear.`,
   },
-  brandwagon: {
-    label: "The Brand-Wagon",
-    tag: "Vibe • Aesthetic • Social Proof",
-    color: "#F2A900",
-    story: `You have a strong sense of style, vibe, energy. You care how life feels. You care how life looks. You want to be seen — not invisible.
 
-But sometimes, you chase what is popular instead of what is real. You fear missing out.
+  // ✅ Renamed: Brand-Wagon → The Aspirant (more driven tone)
+  aspirant: {
+    label: "The Aspirant",
+    tag: "Drive • Prestige • Standards",
+    color: "#D99100",
+    story: `You set high standards and you want to earn your place among the best.
 
-Your growth is not in giving up beauty or expression. Your growth is in choosing what feels true, even when no one is watching.`,
+You believe the right challenge, environment, and reputation will unlock your next level — not for show, but for the discipline and network it forces you to build.
+
+Your path is to chase recognition without being owned by it: choose standards that come from within, then prove them in the real world.`,
   },
-  conventional: {
-    label: "The Conventional",
-    tag: "Stability • Clarity • Structure",
+
+  // ✅ Renamed: Conventional → The Rooted
+  rooted: {
+    label: "The Rooted",
+    tag: "Family • Stability • Respect",
     color: "#6B7280",
-    story: `You care about safety, clarity, and doing things right. You want a path you can trust — one that doesn’t fall apart under you.
+    story: `You value stability, dignity, and choosing a path that family and society understand.
 
-When the way forward is unclear, anxiety rises — not because you are weak, but because you care about consequences.
+You are careful not because you lack courage, but because you understand consequences. You want to build a life that feels reliable, respected, and grounded.
 
-Your growth is not in being reckless. Your growth is in taking small, supported steps into the unknown.`,
+Your path is not to break from your roots — it’s to grow in a direction that is true to you while honoring where you come from.`,
   },
+
   performer: {
     label: "The Performer",
     tag: "Admiration • Presence • Image",
@@ -79,29 +85,32 @@ The mask is what hurts you, not the ambition behind it. Your growth begins the m
   },
 };
 
-/** ========== QUESTIONS (no persona names shown to user) ========= */
+/** ========== QUESTIONS (persona names hidden to user) =========
+  Replaced all previous "brandwagon" → "aspirant"
+  Replaced all previous "conventional" → "rooted"
+*/
 const QUESTIONS = [
   { a: { text: "I want to achieve big things.", persona: "rocket" }, b: { text: "I want to understand myself better.", persona: "voyager" } },
   { a: { text: "I like to try many things before choosing.", persona: "voyager" }, b: { text: "I want to stick to one field I decided.", persona: "specialist" } },
   { a: { text: "I feel happy when I improve and get better.", persona: "rocket" }, b: { text: "I feel happy when I look confident and impressive.", persona: "performer" } },
-  { a: { text: "I enjoy doing things that help me grow inside.", persona: "voyager" }, b: { text: "I enjoy things that look fun or cool.", persona: "brandwagon" } },
-  { a: { text: "I like clear plans and steps.", persona: "conventional" }, b: { text: "I like freedom to figure things out.", persona: "voyager" } },
-  { a: { text: "I keep trying even when it’s hard.", persona: "rocket" }, b: { text: "I lose interest if it stops being exciting.", persona: "brandwagon" } },
-  { a: { text: "I don’t mind starting from scratch.", persona: "rocket" }, b: { text: "I want someone to explain clearly first.", persona: "conventional" } },
-  { a: { text: "I want respect for my skills.", persona: "rocket" }, b: { text: "I want to be admired for my vibe and style.", persona: "performer" } },
+  { a: { text: "I enjoy doing things that help me grow inside.", persona: "voyager" }, b: { text: "I enjoy things that look exciting and impressive.", persona: "aspirant" } },
+  { a: { text: "I like clear plans and steps.", persona: "rooted" }, b: { text: "I like freedom to figure things out.", persona: "voyager" } },
+  { a: { text: "I keep trying even when it’s hard.", persona: "rocket" }, b: { text: "I lose interest if it stops being exciting.", persona: "aspirant" } },
+  { a: { text: "I don’t mind starting from scratch.", persona: "rocket" }, b: { text: "I want someone to explain clearly first.", persona: "rooted" } },
+  { a: { text: "I want respect for my skills.", persona: "rocket" }, b: { text: "I want to earn a place at top institutions.", persona: "aspirant" } },
   { a: { text: "I want to explore more before choosing.", persona: "voyager" }, b: { text: "I want to specialise now and go deep.", persona: "specialist" } },
   { a: { text: "I like talking about ideas and learning.", persona: "voyager" }, b: { text: "I like talking about goals and success.", persona: "rocket" } },
-  { a: { text: "I feel stressed with no clear direction.", persona: "conventional" }, b: { text: "I’m okay figuring it out while moving.", persona: "rocket" } },
-  { a: { text: "I choose things that help me grow long-term.", persona: "rocket" }, b: { text: "I choose things that look exciting now.", persona: "brandwagon" } },
+  { a: { text: "I feel stressed with no clear direction.", persona: "rooted" }, b: { text: "I’m okay figuring it out while moving.", persona: "rocket" } },
+  { a: { text: "I choose things that help me grow long-term.", persona: "rocket" }, b: { text: "I choose paths that signal I’m among the best.", persona: "aspirant" } },
   { a: { text: "I’m okay starting at zero and learning slowly.", persona: "voyager" }, b: { text: "I feel uncomfortable if I’m not already good.", persona: "performer" } },
-  { a: { text: "I like people who challenge me to grow.", persona: "voyager" }, b: { text: "I like people who hype me up.", persona: "brandwagon" } },
+  { a: { text: "I like people who challenge me to grow.", persona: "voyager" }, b: { text: "I like being around high-achievers and top brands.", persona: "aspirant" } },
   { a: { text: "I want life to feel big.", persona: "rocket" }, b: { text: "I want life to feel real and meaningful.", persona: "voyager" } },
   { a: { text: "I like reflecting on why I do things.", persona: "voyager" }, b: { text: "I usually just move on without reflecting.", persona: "performer" } },
-  { a: { text: "I don’t mind messy learning.", persona: "voyager" }, b: { text: "I prefer when things are simple and clear.", persona: "conventional" } },
+  { a: { text: "I don’t mind messy learning.", persona: "voyager" }, b: { text: "I prefer when things are simple and clear.", persona: "rooted" } },
   { a: { text: "I want to earn respect through my work.", persona: "rocket" }, b: { text: "I want attention and to be noticed.", persona: "performer" } },
-  { a: { text: "I like slow, meaningful personal growth.", persona: "voyager" }, b: { text: "I like quick wins and visible results.", persona: "brandwagon" } },
+  { a: { text: "I like slow, meaningful personal growth.", persona: "voyager" }, b: { text: "I like quick, visible wins through elite pathways.", persona: "aspirant" } },
   { a: { text: "Few things define my identity yet.", persona: "voyager" }, b: { text: "I’ve already decided who I am.", persona: "specialist" } },
-  { a: { text: "I take initiative when something needs doing.", persona: "rocket" }, b: { text: "I wait for clear instructions.", persona: "conventional" } },
+  { a: { text: "I take initiative when something needs doing.", persona: "rocket" }, b: { text: "I wait for clear instructions.", persona: "rooted" } },
   { a: { text: "I enjoy doing things even if nobody sees.", persona: "voyager" }, b: { text: "I enjoy it more when people notice.", persona: "performer" } },
   { a: { text: "I feel proud when I complete something difficult.", persona: "rocket" }, b: { text: "I feel proud when I look confident doing it.", persona: "performer" } },
   { a: { text: "I like exploring different interests to discover myself.", persona: "voyager" }, b: { text: "I like sticking to the identity I present.", persona: "specialist" } },
@@ -126,7 +135,7 @@ function ProgressBar({ value }) {
 }
 
 function PrimaryButton({ children, onClick, variant = "a" }) {
-  const bg = variant === "a" ? "#FFFFFF" : "#FFFFFF";
+  const bg = "#FFFFFF";
   const bc = variant === "a" ? COLORS.enterpriseBlue : COLORS.brightTeal;
   const hover = "0 8px 24px rgba(0,0,0,0.08)";
   return (
@@ -153,11 +162,53 @@ function PrimaryButton({ children, onClick, variant = "a" }) {
   );
 }
 
+function Badge({ letter }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        width: 28,
+        height: 28,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 999,
+        fontWeight: 800,
+        color: COLORS.deepBlue,
+        background: "#F3F4F6",
+        border: `1px solid ${COLORS.border}`,
+      }}
+    >
+      {letter}
+    </span>
+  );
+}
+
+function Input({ label, value, onChange, placeholder, type = "text" }) {
+  return (
+    <label style={{ display: "grid", gap: 6 }}>
+      <span style={{ fontSize: 14, opacity: 0.8 }}>{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          padding: "12px 14px",
+          borderRadius: 12,
+          border: `1.5px solid ${COLORS.border}`,
+          outline: "none",
+          fontSize: 16,
+        }}
+      />
+    </label>
+  );
+}
+
 /** ========== APP ========= */
 export default function App() {
   const [i, setI] = useState(0);
   const [scores, setScores] = useState({
-    rocket: 0, voyager: 0, specialist: 0, brandwagon: 0, conventional: 0, performer: 0,
+    rocket: 0, voyager: 0, specialist: 0, aspirant: 0, rooted: 0, performer: 0,
   });
   const [stage, setStage] = useState("quiz"); // "quiz" | "lead" | "result"
   const [name, setName] = useState("");
@@ -168,12 +219,14 @@ export default function App() {
 
   const pct = Math.round((i / QUESTIONS.length) * 100);
 
-  // Leaderboard (top & second)
-  const sorted = useMemo(() => {
-    return Object.keys(PERSONAS)
-      .map((k) => ({ key: k, score: scores[k] }))
-      .sort((a, b) => b.score - a.score);
-  }, [scores]);
+  const sorted = useMemo(
+    () =>
+      Object.keys(PERSONAS)
+        .map((k) => ({ key: k, score: scores[k] }))
+        .sort((a, b) => b.score - a.score),
+    [scores]
+  );
+
   const top = sorted[0]?.key;
   const second = sorted[1]?.key;
 
@@ -224,7 +277,7 @@ export default function App() {
 
   function restart() {
     setI(0);
-    setScores({ rocket: 0, voyager: 0, specialist: 0, brandwagon: 0, conventional: 0, performer: 0 });
+    setScores({ rocket: 0, voyager: 0, specialist: 0, aspirant: 0, rooted: 0, performer: 0 });
     setStage("quiz");
     setName(""); setEmail("");
     setSending(false); setSent(false); setSendError("");
@@ -236,7 +289,7 @@ export default function App() {
         <header style={{ marginBottom: 16 }}>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.deepBlue, margin: 0 }}>LE Persona Quiz</h1>
           <p style={{ marginTop: 6, opacity: 0.75, fontSize: 14 }}>
-            Rocket • Voyager • Specialist • Brand-Wagon • Conventional • Performer
+            Rocket • Voyager • Specialist • Aspirant • Rooted • Performer
           </p>
         </header>
 
@@ -374,48 +427,5 @@ export default function App() {
         </footer>
       </div>
     </div>
-  );
-}
-
-/** ======= Small components ======= */
-function Badge({ letter }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        width: 28,
-        height: 28,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 999,
-        fontWeight: 800,
-        color: COLORS.deepBlue,
-        background: "#F3F4F6",
-        border: `1px solid ${COLORS.border}`,
-      }}
-    >
-      {letter}
-    </span>
-  );
-}
-
-function Input({ label, value, onChange, placeholder, type = "text" }) {
-  return (
-    <label style={{ display: "grid", gap: 6 }}>
-      <span style={{ fontSize: 14, opacity: 0.8 }}>{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        style={{
-          padding: "12px 14px",
-          borderRadius: 12,
-          border: `1.5px solid ${COLORS.border}`,
-          outline: "none",
-          fontSize: 16,
-        }}
-      />
-    </label>
   );
 }
