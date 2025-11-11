@@ -1,15 +1,19 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
-// --- Brand palette (Let's Enterprise)
+/** ========== BRAND ========= */
 const COLORS = {
   enterpriseBlue: "#3663AD",
   deepBlue: "#160E44",
   brightTeal: "#25BCBD",
   sand: "#F6F4EF",
   ink: "#0F1224",
+  border: "#E5E7EB",
 };
 
-// --- Persona metadata
+// ⚠️ Put your Apps Script Web App URL here (step 2 below)
+const GOOGLE_SCRIPT_URL = "https://SCRIPT_URL_HERE";
+
+/** ========== PERSONAS ========= */
 const PERSONAS = {
   rocket: {
     label: "The Rocket",
@@ -69,11 +73,12 @@ Your growth is not in being reckless. Your growth is in taking small, supported 
 
 You speak confidence — but underneath, there is a quiet fear: “If I am not impressive, will I still matter?”
 
-Your excitement is real. Your charisma is real. The mask is what hurts you, not the ambition behind it. Your growth begins the moment you let yourself be seen not as perfect — but as human.`,
+Your excitement is real. Your charisma is real.
+The mask is what hurts you, not the ambition behind it. Your growth begins the moment you let yourself be seen not as perfect — but as human.`,
   },
 };
 
-// --- Forced-choice items (25)
+/** ========== QUESTIONS (no persona names shown to user) ========= */
 const QUESTIONS = [
   { a: { text: "I want to achieve big things.", persona: "rocket" }, b: { text: "I want to understand myself better.", persona: "voyager" } },
   { a: { text: "I like to try many things before choosing.", persona: "voyager" }, b: { text: "I want to stick to one field I decided.", persona: "specialist" } },
@@ -102,147 +107,314 @@ const QUESTIONS = [
   { a: { text: "I want to grow in real life, not just in my image.", persona: "voyager" }, b: { text: "I want to be seen as impressive.", persona: "performer" } },
 ];
 
+/** ========== SMALL UI HELPERS ========= */
 function ProgressBar({ value }) {
   return (
-    <div style={{ background: "#E5E7EB" }} className="w-full h-2 rounded-full">
+    <div style={{ background: "#E5E7EB", height: 8, borderRadius: 999, width: "100%" }}>
       <div
-        className="h-2 rounded-full transition-all"
-        style={{ width: `${value}%`, background: COLORS.enterpriseBlue }}
+        style={{
+          width: `${value}%`,
+          height: 8,
+          borderRadius: 999,
+          background: COLORS.enterpriseBlue,
+          transition: "width 200ms ease",
+        }}
       />
     </div>
   );
 }
 
-function App() {
+function PrimaryButton({ children, onClick, variant = "a" }) {
+  const bg = variant === "a" ? "#FFFFFF" : "#FFFFFF";
+  const bc = variant === "a" ? COLORS.enterpriseBlue : COLORS.brightTeal;
+  const hover = "0 8px 24px rgba(0,0,0,0.08)";
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "block",
+        width: "100%",
+        textAlign: "left",
+        padding: "16px 18px",
+        borderRadius: 16,
+        border: `2px solid ${bc}`,
+        background: bg,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+        fontSize: 18,
+        lineHeight: 1.35,
+        cursor: "pointer",
+      }}
+      onMouseOver={(e) => (e.currentTarget.style.boxShadow = hover)}
+      onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)")}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** ========== APP ========= */
+export default function App() {
   const [i, setI] = useState(0);
   const [scores, setScores] = useState({
-    rocket: 0,
-    voyager: 0,
-    specialist: 0,
-    brandwagon: 0,
-    conventional: 0,
-    performer: 0,
+    rocket: 0, voyager: 0, specialist: 0, brandwagon: 0, conventional: 0, performer: 0,
   });
-  const [done, setDone] = useState(false);
+  const [stage, setStage] = useState("quiz"); // "quiz" | "lead" | "result"
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState("");
 
   const pct = Math.round((i / QUESTIONS.length) * 100);
 
-  function choose(persona) {
-    setScores((s) => ({ ...s, [persona]: (s[persona] || 0) + 1 }));
-    const next = i + 1;
-    if (next >= QUESTIONS.length) setDone(true);
-    setI(next);
-  }
-
-  function restart() {
-    setI(0);
-    setDone(false);
-    setScores({
-      rocket: 0,
-      voyager: 0,
-      specialist: 0,
-      brandwagon: 0,
-      conventional: 0,
-      performer: 0,
-    });
-  }
-
+  // Leaderboard (top & second)
   const sorted = useMemo(() => {
     return Object.keys(PERSONAS)
       .map((k) => ({ key: k, score: scores[k] }))
       .sort((a, b) => b.score - a.score);
   }, [scores]);
-
   const top = sorted[0]?.key;
   const second = sorted[1]?.key;
 
+  function choose(personaKey) {
+    setScores((s) => ({ ...s, [personaKey]: (s[personaKey] || 0) + 1 }));
+    const next = i + 1;
+    if (next >= QUESTIONS.length) {
+      setStage("lead"); // ask for name/email BEFORE reveal
+    } else {
+      setI(next);
+    }
+  }
+
+  async function submitLeadAndShowResults() {
+    setSendError("");
+    if (!name.trim() || !email.trim()) {
+      setSendError("Please enter your name and email.");
+      return;
+    }
+    // Show results immediately; send in background
+    setStage("result");
+
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("SCRIPT_URL_HERE")) return;
+
+    try {
+      setSending(true);
+      const payload = {
+        timestamp: new Date().toISOString(),
+        name,
+        email,
+        scores,
+        top,
+        second,
+      };
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Apps Script often needs this; response can't be read but request is sent
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      setSent(true);
+    } catch (e) {
+      setSendError("Could not send to sheet (network or permissions).");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  function restart() {
+    setI(0);
+    setScores({ rocket: 0, voyager: 0, specialist: 0, brandwagon: 0, conventional: 0, performer: 0 });
+    setStage("quiz");
+    setName(""); setEmail("");
+    setSending(false); setSent(false); setSendError("");
+  }
+
   return (
-    <div className="min-h-screen" style={{ background: COLORS.sand, color: COLORS.ink }}>
-      <div className="max-w-xl mx-auto px-5 pb-20 pt-8">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold" style={{ color: COLORS.deepBlue }}>LE Persona Quiz</h1>
-          <p className="text-sm opacity-80">Rocket • Voyager • Specialist • Brand-Wagon • Conventional • Performer</p>
+    <div style={{ minHeight: "100vh", background: COLORS.sand, color: COLORS.ink, fontSize: 18 }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "32px 20px 80px" }}>
+        <header style={{ marginBottom: 16 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 800, color: COLORS.deepBlue, margin: 0 }}>LE Persona Quiz</h1>
+          <p style={{ marginTop: 6, opacity: 0.75, fontSize: 14 }}>
+            Rocket • Voyager • Specialist • Brand-Wagon • Conventional • Performer
+          </p>
         </header>
 
-        {!done ? (
-          <div className="bg-white rounded-2xl shadow p-5">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm opacity-70">Question {i + 1} of {QUESTIONS.length}</span>
-              <span className="text-sm font-medium" style={{ color: COLORS.enterpriseBlue }}>{pct}%</span>
+        {stage === "quiz" && (
+          <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", padding: 20 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <span style={{ fontSize: 14, opacity: 0.7 }}>Question {i + 1} of {QUESTIONS.length}</span>
+              <span style={{ fontSize: 14, color: COLORS.enterpriseBlue, fontWeight: 600 }}>{pct}%</span>
             </div>
             <ProgressBar value={pct} />
 
-            {i < QUESTIONS.length && (
-              <div className="mt-6">
-                <p className="text-base font-medium mb-4" style={{ color: COLORS.deepBlue }}>
-                  Which one sounds more like you?
-                </p>
-                <div className="grid gap-3">
-                  <button
-                    onClick={() => choose(QUESTIONS[i].a.persona)}
-                    className="w-full text-left p-4 rounded-2xl border hover:shadow transition"
-                    style={{ borderColor: COLORS.enterpriseBlue }}
-                  >
-                    <span className="block font-semibold mb-1" style={{ color: PERSONAS[QUESTIONS[i].a.persona].color }}>A • {PERSONAS[QUESTIONS[i].a.persona].label}</span>
-                    <span className="opacity-90">{QUESTIONS[i].a.text}</span>
-                  </button>
-                  <button
-                    onClick={() => choose(QUESTIONS[i].b.persona)}
-                    className="w-full text-left p-4 rounded-2xl border hover:shadow transition"
-                    style={{ borderColor: COLORS.brightTeal }}
-                  >
-                    <span className="block font-semibold mb-1" style={{ color: PERSONAS[QUESTIONS[i].b.persona].color }}>B • {PERSONAS[QUESTIONS[i].b.persona].label}</span>
-                    <span className="opacity-90">{QUESTIONS[i].b.text}</span>
-                  </button>
-                </div>
+            <div style={{ marginTop: 18 }}>
+              <p style={{ fontSize: 20, fontWeight: 700, color: COLORS.deepBlue, marginBottom: 14 }}>
+                Which one sounds more like you?
+              </p>
+
+              <div style={{ display: "grid", gap: 12 }}>
+                <PrimaryButton variant="a" onClick={() => choose(QUESTIONS[i].a.persona)}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                    <Badge letter="A" />
+                    <span>{QUESTIONS[i].a.text}</span>
+                  </span>
+                </PrimaryButton>
+
+                <PrimaryButton variant="b" onClick={() => choose(QUESTIONS[i].b.persona)}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                    <Badge letter="B" />
+                    <span>{QUESTIONS[i].b.text}</span>
+                  </span>
+                </PrimaryButton>
               </div>
-            )}
+            </div>
           </div>
-        ) : (
-          <div className="bg-white rounded-2xl shadow p-6">
+        )}
+
+        {stage === "lead" && (
+          <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", padding: 22 }}>
+            <h2 style={{ margin: 0, fontSize: 24, color: COLORS.deepBlue, fontWeight: 800, marginBottom: 8 }}>
+              Almost there!
+            </h2>
+            <p style={{ marginTop: 2, opacity: 0.8 }}>Enter your details to see your result and get a copy.</p>
+
+            <div style={{ display: "grid", gap: 12, marginTop: 14 }}>
+              <Input label="Full Name" value={name} onChange={setName} placeholder="Your name" />
+              <Input label="Email" value={email} onChange={setEmail} placeholder="you@example.com" type="email" />
+            </div>
+
+            {sendError && <div style={{ color: "#B91C1C", marginTop: 10, fontSize: 14 }}>{sendError}</div>}
+
+            <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+              <button
+                onClick={submitLeadAndShowResults}
+                style={{
+                  background: COLORS.enterpriseBlue, color: "#fff", padding: "12px 16px",
+                  borderRadius: 12, fontWeight: 700, border: 0, cursor: "pointer"
+                }}
+              >
+                Show my result
+              </button>
+              <button
+                onClick={restart}
+                style={{
+                  background: "#EEF2FF", color: COLORS.deepBlue, padding: "12px 16px",
+                  borderRadius: 12, fontWeight: 600, border: 0, cursor: "pointer"
+                }}
+              >
+                Restart
+              </button>
+              {sending && <span style={{ fontSize: 14, opacity: 0.7 }}>Sending to sheet…</span>}
+              {sent && <span style={{ fontSize: 14, color: "#059669" }}>Saved!</span>}
+            </div>
+          </div>
+        )}
+
+        {stage === "result" && (
+          <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 6px 20px rgba(0,0,0,0.08)", padding: 22 }}>
             {top && (
-              <div className="mb-6">
-                <div className="text-sm uppercase tracking-wide mb-2" style={{ color: COLORS.enterpriseBlue }}>Your Persona</div>
-                <h2 className="text-3xl font-extrabold mb-2" style={{ color: PERSONAS[top].color }}>{PERSONAS[top].label}</h2>
-                <div className="text-sm mb-3 opacity-80">{PERSONAS[top].tag}</div>
-                <p className="whitespace-pre-line leading-relaxed">{PERSONAS[top].story}</p>
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: COLORS.enterpriseBlue, marginBottom: 6 }}>
+                  Your Persona
+                </div>
+                <h2 style={{ fontSize: 32, margin: "0 0 6px", color: PERSONAS[top].color, fontWeight: 900 }}>
+                  {PERSONAS[top].label}
+                </h2>
+                <div style={{ fontSize: 14, opacity: 0.8, marginBottom: 8 }}>{PERSONAS[top].tag}</div>
+                <p style={{ whiteSpace: "pre-line", lineHeight: 1.55 }}>{PERSONAS[top].story}</p>
               </div>
             )}
 
             {second && (
-              <div className="mb-6">
-                <div className="text-sm uppercase tracking-wide mb-2" style={{ color: COLORS.deepBlue }}>Growth Direction</div>
-                <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm" style={{ background: COLORS.sand, color: PERSONAS[second].color }}>
+              <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <div style={{ fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: COLORS.deepBlue, marginBottom: 6 }}>
+                  Growth Direction
+                </div>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999,
+                  padding: "6px 12px", background: COLORS.sand, color: PERSONAS[second].color, fontWeight: 700
+                }}>
                   → {PERSONAS[second].label}
                 </div>
               </div>
             )}
 
-            <div className="grid gap-2 mt-6">
-              <div className="text-sm opacity-70">Your profile (counts):</div>
-              <div className="grid grid-cols-2 gap-2">
+            <div style={{ marginTop: 18 }}>
+              <div style={{ fontSize: 14, opacity: 0.7, marginBottom: 6 }}>Your profile (counts):</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {sorted.map(({ key, score }) => (
-                  <div key={key} className="flex items-center justify-between rounded-xl px-3 py-2 border" style={{ borderColor: "#e5e7eb" }}>
-                    <span className="text-sm" style={{ color: PERSONAS[key].color }}>{PERSONAS[key].label}</span>
-                    <span className="text-sm font-semibold">{score}</span>
+                  <div key={key} style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
+                    <span style={{ color: PERSONAS[key].color, fontSize: 14 }}>{PERSONAS[key].label}</span>
+                    <span style={{ fontWeight: 700 }}>{score}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button onClick={restart} className="px-4 py-2 rounded-xl text-white" style={{ background: COLORS.enterpriseBlue }}>Restart</button>
-              <button onClick={() => window.print()} className="px-4 py-2 rounded-xl" style={{ color: COLORS.deepBlue, background: "#EEF2FF" }}>Print / Save</button>
+            <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
+              <button
+                onClick={() => window.print()}
+                style={{ background: "#EEF2FF", color: COLORS.deepBlue, padding: "12px 16px", borderRadius: 12, fontWeight: 700, border: 0, cursor: "pointer" }}
+              >
+                Print / Save
+              </button>
+              <button
+                onClick={restart}
+                style={{ background: COLORS.enterpriseBlue, color: "#fff", padding: "12px 16px", borderRadius: 12, fontWeight: 700, border: 0, cursor: "pointer" }}
+              >
+                Restart
+              </button>
             </div>
           </div>
         )}
 
-        <footer className="mt-8 text-xs opacity-60">
-          <div>© Let’s Enterprise — Persona Quiz</div>
+        <footer style={{ marginTop: 20, fontSize: 12, opacity: 0.6 }}>
+          © Let’s Enterprise — Persona Quiz
         </footer>
       </div>
     </div>
   );
 }
 
-export default App;
+/** ======= Small components ======= */
+function Badge({ letter }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        width: 28,
+        height: 28,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 999,
+        fontWeight: 800,
+        color: COLORS.deepBlue,
+        background: "#F3F4F6",
+        border: `1px solid ${COLORS.border}`,
+      }}
+    >
+      {letter}
+    </span>
+  );
+}
+
+function Input({ label, value, onChange, placeholder, type = "text" }) {
+  return (
+    <label style={{ display: "grid", gap: 6 }}>
+      <span style={{ fontSize: 14, opacity: 0.8 }}>{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          padding: "12px 14px",
+          borderRadius: 12,
+          border: `1.5px solid ${COLORS.border}`,
+          outline: "none",
+          fontSize: 16,
+        }}
+      />
+    </label>
+  );
+}
