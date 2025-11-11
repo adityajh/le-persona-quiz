@@ -85,37 +85,109 @@ The mask is what hurts you, not the ambition behind it. Your growth begins the m
   },
 };
 
-/** ========== QUESTIONS (persona names hidden to user) =========
-  Replaced all previous "brandwagon" → "aspirant"
-  Replaced all previous "conventional" → "rooted"
-*/
 const QUESTIONS = [
-  { a: { text: "I want to achieve big things.", persona: "rocket" }, b: { text: "I want to understand myself better.", persona: "voyager" } },
-  { a: { text: "I like to try many things before choosing.", persona: "voyager" }, b: { text: "I want to stick to one field I decided.", persona: "specialist" } },
-  { a: { text: "I feel happy when I improve and get better.", persona: "rocket" }, b: { text: "I feel happy when I look confident and impressive.", persona: "performer" } },
-  { a: { text: "I enjoy doing things that help me grow inside.", persona: "voyager" }, b: { text: "I enjoy things that look exciting and impressive.", persona: "aspirant" } },
-  { a: { text: "I like clear plans and steps.", persona: "rooted" }, b: { text: "I like freedom to figure things out.", persona: "voyager" } },
-  { a: { text: "I keep trying even when it’s hard.", persona: "rocket" }, b: { text: "I lose interest if it stops being exciting.", persona: "aspirant" } },
-  { a: { text: "I don’t mind starting from scratch.", persona: "rocket" }, b: { text: "I want someone to explain clearly first.", persona: "rooted" } },
-  { a: { text: "I want respect for my skills.", persona: "rocket" }, b: { text: "I want to earn a place at top institutions.", persona: "aspirant" } },
-  { a: { text: "I want to explore more before choosing.", persona: "voyager" }, b: { text: "I want to specialise now and go deep.", persona: "specialist" } },
-  { a: { text: "I like talking about ideas and learning.", persona: "voyager" }, b: { text: "I like talking about goals and success.", persona: "rocket" } },
-  { a: { text: "I feel stressed with no clear direction.", persona: "rooted" }, b: { text: "I’m okay figuring it out while moving.", persona: "rocket" } },
-  { a: { text: "I choose things that help me grow long-term.", persona: "rocket" }, b: { text: "I choose paths that signal I’m among the best.", persona: "aspirant" } },
-  { a: { text: "I’m okay starting at zero and learning slowly.", persona: "voyager" }, b: { text: "I feel uncomfortable if I’m not already good.", persona: "performer" } },
-  { a: { text: "I like people who challenge me to grow.", persona: "voyager" }, b: { text: "I like being around high-achievers and top brands.", persona: "aspirant" } },
-  { a: { text: "I want life to feel big.", persona: "rocket" }, b: { text: "I want life to feel real and meaningful.", persona: "voyager" } },
-  { a: { text: "I like reflecting on why I do things.", persona: "voyager" }, b: { text: "I usually just move on without reflecting.", persona: "performer" } },
-  { a: { text: "I don’t mind messy learning.", persona: "voyager" }, b: { text: "I prefer when things are simple and clear.", persona: "rooted" } },
-  { a: { text: "I want to earn respect through my work.", persona: "rocket" }, b: { text: "I want attention and to be noticed.", persona: "performer" } },
-  { a: { text: "I like slow, meaningful personal growth.", persona: "voyager" }, b: { text: "I like quick, visible wins through elite pathways.", persona: "aspirant" } },
-  { a: { text: "Few things define my identity yet.", persona: "voyager" }, b: { text: "I’ve already decided who I am.", persona: "specialist" } },
-  { a: { text: "I take initiative when something needs doing.", persona: "rocket" }, b: { text: "I wait for clear instructions.", persona: "rooted" } },
-  { a: { text: "I enjoy doing things even if nobody sees.", persona: "voyager" }, b: { text: "I enjoy it more when people notice.", persona: "performer" } },
-  { a: { text: "I feel proud when I complete something difficult.", persona: "rocket" }, b: { text: "I feel proud when I look confident doing it.", persona: "performer" } },
-  { a: { text: "I like exploring different interests to discover myself.", persona: "voyager" }, b: { text: "I like sticking to the identity I present.", persona: "specialist" } },
-  { a: { text: "I want to grow in real life, not just in my image.", persona: "voyager" }, b: { text: "I want to be seen as impressive.", persona: "performer" } },
+  // 1
+  { a: { text: "I enjoy taking on challenges with clear momentum.", persona: "rocket" },
+    b: { text: "I enjoy exploring different directions before deciding.", persona: "voyager" } },
+
+  // 2
+  { a: { text: "I like focusing on one area for a long time.", persona: "specialist" },
+    b: { text: "I like sampling multiple interests for a while.", persona: "voyager" } },
+
+  // 3
+  { a: { text: "I like being part of well-regarded programs or teams.", persona: "aspirant" },
+    b: { text: "I like pushing myself through stretch tasks.", persona: "rocket" } },
+
+  // 4
+  { a: { text: "I feel comfortable with familiar, well-understood paths.", persona: "rooted" },
+    b: { text: "I feel comfortable with open-ended paths.", persona: "voyager" } },
+
+  // 5
+  { a: { text: "I enjoy presenting my work to an audience.", persona: "performer" },
+    b: { text: "I enjoy improving the craft quietly.", persona: "specialist" } },
+
+  // 6
+  { a: { text: "I prefer goals that are recognized by others (exams, ranks, badges).", persona: "aspirant" },
+    b: { text: "I prefer goals that deepen one specific skill.", persona: "specialist" } },
+
+  // 7
+  { a: { text: "I like detailed plans and clear steps.", persona: "rooted" },
+    b: { text: "I like moving first and refining the plan while working.", persona: "rocket" } },
+
+  // 8
+  { a: { text: "I’m energized when my effort is visible.", persona: "performer" },
+    b: { text: "I’m energized by measurable progress toward recognized goals.", persona: "aspirant" } },
+
+  // 9
+  { a: { text: "I prefer mastering one tool thoroughly.", persona: "specialist" },
+    b: { text: "I prefer trying several tools to compare.", persona: "voyager" } },
+
+  // 10
+  { a: { text: "I feel motivated by competitive environments.", persona: "aspirant" },
+    b: { text: "I feel motivated by steady, predictable routines.", persona: "rooted" } },
+
+  // 11
+  { a: { text: "I tend to take initiative without being asked.", persona: "rocket" },
+    b: { text: "I tend to step in when the moment needs a confident voice.", persona: "performer" } },
+
+  // 12
+  { a: { text: "I like unstructured time to figure things out.", persona: "voyager" },
+    b: { text: "I like structured time with clear expectations.", persona: "rooted" } },
+
+  // 13
+  { a: { text: "I prefer depth even if progress is less visible.", persona: "specialist" },
+    b: { text: "I prefer milestones that are easy to track and recognize.", persona: "aspirant" } },
+
+  // 14
+  { a: { text: "I enjoy fast checkpoints to track progress.", persona: "aspirant" },
+    b: { text: "I enjoy slow thinking to connect ideas.", persona: "voyager" } },
+
+  // 15
+  { a: { text: "I enjoy collaborating in settings where people interact live.", persona: "performer" },
+    b: { text: "I enjoy solo work that lets me concentrate.", persona: "specialist" } },
+
+  // 16
+  { a: { text: "I often consult family or mentors before a big choice.", persona: "rooted" },
+    b: { text: "I often decide quickly and learn from the outcome.", persona: "rocket" } },
+
+  // 17
+  { a: { text: "I choose opportunities known for high standards.", persona: "aspirant" },
+    b: { text: "I choose opportunities known for range and discovery.", persona: "voyager" } },
+
+  // 18
+  { a: { text: "I’m comfortable introducing myself to new groups.", persona: "performer" },
+    b: { text: "I’m comfortable settling in and building gradually.", persona: "rooted" } },
+
+  // 19
+  { a: { text: "I like working with clear methods I repeat and refine.", persona: "specialist" },
+    b: { text: "I like testing myself with new, tougher tasks.", persona: "rocket" } },
+
+  // 20
+  { a: { text: "I like journaling or debriefing after experiences.", persona: "voyager" },
+    b: { text: "I like sharing takeaways in front of others.", persona: "performer" } },
+
+  // 21
+  { a: { text: "I feel driven when there’s a rank, stage, or selection to aim for.", persona: "aspirant" },
+    b: { text: "I feel steady when there’s a routine I can trust.", persona: "rooted" } },
+
+  // 22
+  { a: { text: "I’m comfortable saying no to side tracks to protect focus.", persona: "specialist" },
+    b: { text: "I’m comfortable saying yes to side tracks to learn.", persona: "voyager" } },
+
+  // 23
+  { a: { text: "I prefer roles where I can represent the team publicly.", persona: "performer" },
+    b: { text: "I prefer roles with clear titles or credentials.", persona: "aspirant" } },
+
+  // 24
+  { a: { text: "I like polishing how something is delivered.", persona: "performer" },
+    b: { text: "I like making sure the basics are covered.", persona: "rooted" } },
+
+  // 25
+  { a: { text: "I feel satisfied when effort turns into visible progress.", persona: "rocket" },
+    b: { text: "I feel satisfied when technique becomes cleaner.", persona: "specialist" } },
 ];
+
+
 
 /** ========== SMALL UI HELPERS ========= */
 function ProgressBar({ value }) {
