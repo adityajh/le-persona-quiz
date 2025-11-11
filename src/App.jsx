@@ -11,7 +11,8 @@ const COLORS = {
 };
 
 // ⚠️ Put your Apps Script Web App URL here (step 2 below)
-const GOOGLE_SCRIPT_URL = "https://SCRIPT_URL_HERE";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwU7gBtfgcf7y5MKUV2_ysl0_TIcDv2jVegjIKa6scvOnhiNIfVIp8xTICfxIPAyPxyWA/exec";
+
 
 /** ========== PERSONAS ========= */
 const PERSONAS = {
