@@ -8,6 +8,16 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+
+  {
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "weights:check": "node scripts/check-weights.mjs"
+  }
+}
+  
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
