@@ -1,0 +1,67 @@
+{
+  "personas": {
+    "rocket": {
+      "label": "The Rocket",
+      "tag": "Ambition • Mastery • Momentum",
+      "color": "#3663AD",
+      "story": "You move with hunger. You’ve always felt there is something bigger you’re meant to do, and you are willing to chase it.\n\nYou don’t fear effort — what you fear is potential left unused. You want to meet the version of you that is powerful, sharp, undeniably capable.\n\nYour path is not to slow down. Your path is to learn how to turn intensity into mastery."
+    },
+    "voyager": {
+      "label": "The Voyager",
+      "tag": "Discovery • Identity • Confidence",
+      "color": "#25BCBD",
+      "story": "You are someone who is becoming.\n\nYou grow through experiences that change you on the inside. You want to feel proud of yourself — not just for what you do, but for who you are becoming.\n\nSometimes the journey feels confusing or overwhelming. That’s okay. It means you are in motion. Your path is not to rush choosing. Your path is to walk, reflect, and rise into yourself."
+    },
+    "specialist": {
+      "label": "The Specialist",
+      "tag": "Depth • Excellence • Focus (Early)",
+      "color": "#C28B37",
+      "story": "You care about excellence. You want to be among the few who are truly good at something — not just another person in the crowd.\n\nYour focus is strong. Your identity is sharp. But sometimes, this turns into comparison and pressure to stay ahead. You worry that exploring will make you fall behind.\n\nYour growth is not in narrowing more. Your growth is in exploring just enough to choose with truth, not fear."
+    },
+    "aspirant": {
+      "label": "The Aspirant",
+      "tag": "Drive • Prestige • Standards",
+      "color": "#D99100",
+      "story": "You set high standards and you want to earn your place among the best.\n\nYou believe the right challenge, environment, and reputation will unlock your next level — not for show, but for the discipline and network it forces you to build.\n\nYour path is to chase recognition without being owned by it: choose standards that come from within, then prove them in the real world."
+    },
+    "rooted": {
+      "label": "The Rooted",
+      "tag": "Family • Stability • Respect",
+      "color": "#6B7280",
+      "story": "You value stability, dignity, and choosing a path that family and society understand.\n\nYou are careful not because you lack courage, but because you understand consequences. You want to build a life that feels reliable, respected, and grounded.\n\nYour path is not to break from your roots — it’s to grow in a direction that is true to you while honoring where you come from."
+    },
+    "performer": {
+      "label": "The Performer",
+      "tag": "Admiration • Presence • Image",
+      "color": "#E14949",
+      "story": "You shine. You know how to carry yourself. You know how to be noticed.\n\nYou speak confidence — but underneath, there is a quiet fear: “If I am not impressive, will I still matter?”\n\nYour excitement is real. Your charisma is real.\nThe mask is what hurts you, not the ambition behind it. Your growth begins the moment you let yourself be seen not as perfect — but as human."
+    }
+  },
+  "questions": [
+    { "a": { "text": "I enjoy taking on challenges with clear momentum.", "persona": "rocket" }, "b": { "text": "I enjoy exploring different directions before deciding.", "persona": "voyager" } },
+    { "a": { "text": "I like focusing on one area for a long time.", "persona": "specialist" }, "b": { "text": "I like sampling multiple interests for a while.", "persona": "voyager" } },
+    { "a": { "text": "I like being part of well-regarded programs or teams.", "persona": "aspirant" }, "b": { "text": "I like pushing myself through stretch tasks.", "persona": "rocket" } },
+    { "a": { "text": "I feel comfortable with familiar, well-understood paths.", "persona": "rooted" }, "b": { "text": "I feel comfortable with open-ended paths.", "persona": "voyager" } },
+    { "a": { "text": "I enjoy presenting my work to an audience.", "persona": "performer" }, "b": { "text": "I enjoy improving the craft quietly.", "persona": "specialist" } },
+    { "a": { "text": "I prefer goals that are recognized by others (exams, ranks, badges).", "persona": "aspirant" }, "b": { "text": "I prefer goals that deepen one specific skill.", "persona": "specialist" } },
+    { "a": { "text": "I like detailed plans and clear steps.", "persona": "rooted" }, "b": { "text": "I like moving first and refining the plan while working.", "persona": "rocket" } },
+    { "a": { "text": "I’m energized when my effort is visible.", "persona": "performer" }, "b": { "text": "I’m energized by measurable progress toward recognized goals.", "persona": "aspirant" } },
+    { "a": { "text": "I prefer mastering one tool thoroughly.", "persona": "specialist" }, "b": { "text": "I prefer trying several tools to compare.", "persona": "voyager" } },
+    { "a": { "text": "I feel motivated by competitive environments.", "persona": "aspirant" }, "b": { "text": "I feel motivated by steady, predictable routines.", "persona": "rooted" } },
+    { "a": { "text": "I tend to take initiative without being asked.", "persona": "rocket" }, "b": { "text": "I tend to step in when the moment needs a confident voice.", "persona": "performer" } },
+    { "a": { "text": "I like unstructured time to figure things out.", "persona": "voyager" }, "b": { "text": "I like structured time with clear expectations.", "persona": "rooted" } },
+    { "a": { "text": "I prefer depth even if progress is less visible.", "persona": "specialist" }, "b": { "text": "I prefer milestones that are easy to track and recognize.", "persona": "aspirant" } },
+    { "a": { "text": "I enjoy fast checkpoints to track progress.", "persona": "aspirant" }, "b": { "text": "I enjoy slow thinking to connect ideas.", "persona": "voyager" } },
+    { "a": { "text": "I enjoy collaborating in settings where people interact live.", "persona": "performer" }, "b": { "text": "I enjoy solo work that lets me concentrate.", "persona": "specialist" } },
+    { "a": { "text": "I often consult family or mentors before a big choice.", "persona": "rooted" }, "b": { "text": "I often decide quickly and learn from the outcome.", "persona": "rocket" } },
+    { "a": { "text": "I choose opportunities known for high standards.", "persona": "aspirant" }, "b": { "text": "I choose opportunities known for range and discovery.", "persona": "voyager" } },
+    { "a": { "text": "I’m comfortable introducing myself to new groups.", "persona": "performer" }, "b": { "text": "I’m comfortable settling in and building gradually.", "persona": "rooted" } },
+    { "a": { "text": "I like working with clear methods I repeat and refine.", "persona": "specialist" }, "b": { "text": "I like testing myself with new, tougher tasks.", "persona": "rocket" } },
+    { "a": { "text": "I like journaling or debriefing after experiences.", "persona": "voyager" }, "b": { "text": "I like sharing takeaways in front of others.", "persona": "performer" } },
+    { "a": { "text": "I feel driven when there’s a rank, stage, or selection to aim for.", "persona": "aspirant" }, "b": { "text": "I feel steady when there’s a routine I can trust.", "persona": "rooted" } },
+    { "a": { "text": "I’m comfortable saying no to side tracks to protect focus.", "persona": "specialist" }, "b": { "text": "I’m comfortable saying yes to side tracks to learn.", "persona": "voyager" } },
+    { "a": { "text": "I prefer roles where I can represent the team publicly.", "persona": "performer" }, "b": { "text": "I prefer roles with clear titles or credentials.", "persona": "aspirant" } },
+    { "a": { "text": "I like polishing how something is delivered.", "persona": "performer" }, "b": { "text": "I like making sure the basics are covered.", "persona": "rooted" } },
+    { "a": { "text": "I feel satisfied when effort turns into visible progress.", "persona": "rocket" }, "b": { "text": "I feel satisfied when technique becomes cleaner.", "persona": "specialist" } }
+  ]
+}
