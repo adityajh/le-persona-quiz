@@ -224,20 +224,21 @@ async function submitLeadAndShowResults() {
   try {
     setSending(true);
 
-    const res = await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  const res = await fetch("/api/submit", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload)
+  });
 
-    // Debug: log the raw response from Apps Script
-    const text = await res.text();
-    console.log("Apps Script response:", text);
+  const json = await res.json();
+  console.log("Proxy response:", json);
 
-    if (res.ok) {
-      setSent(true);
-      return;
-    }
+  if (json.ok) {
+    setSent(true);
+  } else {
+    setSendError("Server error: " + (json?.error || "unknown"));
+  }
+
 
     // Fallback for CORS (opaque response, but request is sent)
     await fetch(GOOGLE_SCRIPT_URL, {
