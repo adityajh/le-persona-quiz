@@ -198,40 +198,61 @@ export default function App() {
     setI((x) => Math.max(0, x - 1));
   }
 
-  async function submitLeadAndShowResults() {
-    setSendError("");
-    if (!name.trim() || !email.trim() || !validateEmail(email)) {
-      setSendError("Please enter a valid name and email.");
+async function submitLeadAndShowResults() {
+  setSendError("");
+  if (!name.trim() || !validateEmail(email)) {
+    setSendError("Please enter a valid name and email.");
+    return;
+  }
+
+  // Show results immediately (don’t block UX)
+  setStage("result");
+
+  if (!GOOGLE_SCRIPT_URL) {
+    console.warn("Missing VITE_GOOGLE_SCRIPT_URL");
+    return;
+  }
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    name,
+    email,
+    scores,
+    top,
+    second
+  };
+
+  try {
+    setSending(true);
+
+    // Try normal POST first
+    const res = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      setSent(true);
       return;
     }
-    setStage("result");
 
-    if (!GOOGLE_SCRIPT_URL) return;
+    // Fallback for Apps Script CORS (opaque response, but request is sent)
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    setSent(true);
 
-    try {
-      setSending(true);
-      const payload = {
-        timestamp: new Date().toISOString(),
-        name,
-        email,
-        scores,
-        top,
-        second
-      };
-      // If Apps Script CORS blocks read, you can switch to: mode: "no-cors"
-      const res = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) setSent(true);
-      else setSendError("Could not save to sheet (non-200).");
-    } catch (e) {
-      setSendError("Could not send to sheet (network or permissions).");
-    } finally {
-      setSending(false);
-    }
+  } catch (e) {
+    setSendError("Could not send to sheet (network or permissions).");
+  } finally {
+    setSending(false);
   }
+}
+
 
   function restart() {
     setI(0);
