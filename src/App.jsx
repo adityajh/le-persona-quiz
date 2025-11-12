@@ -205,7 +205,6 @@ async function submitLeadAndShowResults() {
     return;
   }
 
-  // Show results immediately (don’t block UX)
   setStage("result");
 
   if (!GOOGLE_SCRIPT_URL) {
@@ -225,19 +224,22 @@ async function submitLeadAndShowResults() {
   try {
     setSending(true);
 
-    // Try normal POST first
     const res = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
+    // Debug: log the raw response from Apps Script
+    const text = await res.text();
+    console.log("Apps Script response:", text);
+
     if (res.ok) {
       setSent(true);
       return;
     }
 
-    // Fallback for Apps Script CORS (opaque response, but request is sent)
+    // Fallback for CORS (opaque response, but request is sent)
     await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
@@ -247,6 +249,7 @@ async function submitLeadAndShowResults() {
     setSent(true);
 
   } catch (e) {
+    console.error("Error sending to Apps Script:", e);
     setSendError("Could not send to sheet (network or permissions).");
   } finally {
     setSending(false);
