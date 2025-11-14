@@ -7,7 +7,7 @@ import { loadQuizData } from "./lib/loadData";
 
 const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || "";
 
-/* ---------- Small UI helpers (inlined) ---------- */
+/* ---------- Small UI helpers (inlined) ---------- */ 
 function ProgressBar({ value }) {
   return (
     <div style={{ background: "#E5E7EB", height: 8, borderRadius: 999, width: "100%" }}>
